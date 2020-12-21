@@ -8,11 +8,9 @@
 #include "common/loader/sstypes.h"
 #include <stdio.h>
 #include <string>
-#include <Windows.h>
 #include <stddef.h>
 
-#include <GL/glew.h>
-#include "../lib/SSTextureGL.h"
+#include "SSTextureGBA.h"
 
 namespace ss
 {
