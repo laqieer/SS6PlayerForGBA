@@ -306,6 +306,125 @@ namespace ss
 	*/
 	void SSDrawSprite(CustomSprite *sprite, State *overwrite_state)
 	{
+        //アプリケーションからPlayer::drawに渡された拡張パラメータ
+		void* exParam = sprite->_parentPlayer->getExParamDraw();
+		if (exParam)
+		{
+			//exParamをキャストして使用してください。
+		}
+
+
+		if (sprite->_state.isVisibled == false) return; //非表示なので処理をしない
+
+		//ステータスから情報を取得し、各プラットフォームに合わせて機能を実装してください。
+		State state;
+		if (overwrite_state)
+		{
+			//個別に用意したステートを使用する（エフェクトのパーティクル用）
+			state = *overwrite_state;
+		}
+		else
+		{
+			state = sprite->_state;
+		}
+		int tex_index = state.texture.handle;
+		if (texture[tex_index] == nullptr)
+		{
+			return;
+		}
+
+		execMask(sprite);	//マスク初期化
+
+        /**
+		* GBAのOBJ機能を使用してスプライトを表示します。
+		* 下方向がプラスになります。
+        */
+
+        if (state.cellIndex > 31)
+        {
+            return;
+        }
+
+        OBJ_ATTR obj;
+
+        switch ((int)state.size_Y + 100 * (int)state.size_X)
+        {
+            case 808:
+                obj.attr1 = ATTR1_SIZE_8x8;
+                obj.attr0 = ATTR0_SQUARE;
+                break;
+            case 1616:
+                obj.attr1 = ATTR1_SIZE_16x16;
+                obj.attr0 = ATTR0_SQUARE;
+                break;
+            case 3232:
+                obj.attr1 = ATTR1_SIZE_32x32;
+                obj.attr0 = ATTR0_SQUARE;
+                break;
+            case 6464:
+                obj.attr1 = ATTR1_SIZE_64x64;
+                obj.attr0 = ATTR0_SQUARE;
+                break;
+            case 816:
+                obj.attr1 = ATTR1_SIZE_8x16;
+                obj.attr0 = ATTR0_TALL;
+                break;
+            case 832:
+                obj.attr1 = ATTR1_SIZE_8x32;
+                obj.attr0 = ATTR0_TALL;
+                break;
+            case 1632:
+                obj.attr1 = ATTR1_SIZE_16x32;
+                obj.attr0 = ATTR0_TALL;
+                break;
+            case 3264:
+                obj.attr1 = ATTR1_SIZE_32x64;
+                obj.attr0 = ATTR0_TALL;
+                break;
+            case 168:
+                obj.attr1 = ATTR1_SIZE_16x8;
+                obj.attr0 = ATTR0_WIDE;
+                break;
+            case 328:
+                obj.attr1 = ATTR1_SIZE_32x8;
+                obj.attr0 = ATTR0_WIDE;
+                break;
+            case 3216:
+                obj.attr1 = ATTR1_SIZE_32x16;
+                obj.attr0 = ATTR0_WIDE;
+                break;
+            case 6432:
+                obj.attr1 = ATTR1_SIZE_64x32;
+                obj.attr0 = ATTR0_WIDE;
+                break;
+            default:
+                return;
+        }
+
+        obj.attr2 = ATTR2_BUILD(256 * state.texture + 32 * (int)state.rect.origin.y / 8 + (int)state.rect.origin.x / 8, state.texture, 0);
+
+        float x = state.mat[12];	/// 表示座標はマトリクスから取得します。
+		float y = state.mat[13];	/// 表示座標はマトリクスから取得します。
+        obj_set_pos(&obj, (int)x, (int)y);
+
+        float rotationZ = RadianToDegree(state.Calc_rotationZ);		/// 回転値
+		float scaleX = state.Calc_scaleX;							/// 拡大率
+		float scaleY = state.Calc_scaleY;							/// 拡大率
+        if (rotationZ == 0.0f && scaleX == 1.0f && scaleY == 1.0f)
+        {
+            obj.attr0 |= ATTR0_REG;
+            obj.attr1 |= state.flipX ? ATTR1_HFLIP: 0;
+            obj.attr1 |= state.flipY ? ATTR1_VFLIP: 0;
+        }
+        else
+        {
+            obj.attr0 |= ATTR0_AFF_DBL;
+            // https://wiki.nycresistor.com/wiki/GB101:Affine_Sprites
+            obj.attr1 |= ATTR1_AFF_ID(state.cellIndex);
+            obj_aff_rotscale(&obj_aff_mem[state.cellIndex], (FIXED)(scaleX * 256), (FIXED)(scaleY * 256), (u16)(rotationZ * 0xffff / 360));
+        }
+
+        oam_copy(&obj_mem[state.cellIndex], &obj, 1);
     }
 
 
