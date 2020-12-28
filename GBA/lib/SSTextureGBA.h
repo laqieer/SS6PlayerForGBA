@@ -2,6 +2,7 @@
 #define __TKTEXTURE__
 
 #include <stdio.h>
+#include <cstring>
 
 #include "tonc.h"
 #include "gbfs.h"

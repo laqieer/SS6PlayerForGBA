@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+*.elf
+
+# Emulator files
+*.sav

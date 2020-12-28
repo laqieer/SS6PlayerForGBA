@@ -88,6 +88,7 @@ https://github.com/SpriteStudio/SpriteStudio6-SDK
 #include <map>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <stdarg.h>
 #include <assert.h>
 #include <time.h>

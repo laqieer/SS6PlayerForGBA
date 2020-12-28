@@ -20,21 +20,21 @@ int SSTextureGBA::getFreeTexture()
 ===================================================================================== */
 int LoadTextureGBA( const char* Filename )
 {
-	int glyphTexture = getFreeTexture();
+	int glyphTexture = SSTextureGBA::getFreeTexture();
     if (glyphTexture == -1)
     {
         return glyphTexture;
     }
 
-    const GBFS_FILE *dat = find_first_gbfs_file(find_first_gbfs_file);
+    const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
 
     // load palette and tiles (32 bytes palette + lz77 compressed tiles)
     u32 fileSize = 0;
-    const char *fp = gbfs_get_obj(dat, Filename, &fileSize);
+    const char *fp = (const char *)gbfs_get_obj(dat, Filename, &fileSize);
     const int paletteLength = 32;
     memcpy(pal_obj_bank[glyphTexture], fp, paletteLength);
     const int tiles = 256;
-    LZ77UnCompVram(fp + paletteLength, tile_mem_obj[0][tiles * glyphTexture])
+    LZ77UnCompVram(fp + paletteLength, &tile_mem_obj[0][tiles * glyphTexture]);
 
 	return glyphTexture;
 }

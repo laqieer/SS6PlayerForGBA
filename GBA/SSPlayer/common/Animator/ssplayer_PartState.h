@@ -3,6 +3,9 @@
 
 //#include "../loader/ssloader.h"
 //#include "../Helper/ssHelper.h"
+
+#include <cstring>
+
 namespace ss
 {
 

@@ -108,10 +108,10 @@ namespace ss
 			do
 			{
 				// read the file from gbfs
-                const GBFS_FILE *dat = find_first_gbfs_file(find_first_gbfs_file);
-                const void *fp = gbfs_get_obj(dat, pszFileName, pSize);
+                const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
+                const void *fp = gbfs_get_obj(dat, pszFileName, (u32 *)pSize);
                 pBuffer = new unsigned char[*pSize];
-                memcpy(pBuffer, fp, pSize);
+                memcpy(pBuffer, fp, *pSize);
 			} while (0);
 		}
 
@@ -401,7 +401,7 @@ namespace ss
                 return;
         }
 
-        obj.attr2 = ATTR2_BUILD(256 * state.texture + 32 * (int)state.rect.origin.y / 8 + (int)state.rect.origin.x / 8, state.texture, 0);
+        obj.attr2 = ATTR2_BUILD(256 * tex_index + 32 * (int)state.rect.origin.y / 8 + (int)state.rect.origin.x / 8, tex_index, 0);
 
         float x = state.mat[12];	/// 表示座標はマトリクスから取得します。
 		float y = state.mat[13];	/// 表示座標はマトリクスから取得します。
