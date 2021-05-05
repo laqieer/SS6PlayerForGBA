@@ -1,4 +1,4 @@
-﻿// 
+// 
 //  SS6Platform.cpp
 //
 #include "SS6PlayerPlatform.h"
@@ -20,6 +20,7 @@ namespace ss
 	SSTextureGBA* texture[TEXTURE_MAX];				//セルマップの参照するテクスチャ情報の保持
 	std::string textureKey[TEXTURE_MAX];			//セルマップの参照するテクスチャキャッシュに登録するキー
 	int texture_index = 0;							//セルマップの参照ポインタ
+    int object_index = 0;                            //OBJ ID
 
 	//レンダリング用ブレンドファンクションを使用するかフラグ
 	static bool enableRenderingBlendFunc = false;
@@ -40,6 +41,7 @@ namespace ss
 			textureKey[i] = "";
 		}
 		texture_index = 0;
+        object_index = 0;
 		_direction = PLUS_DOWN;
 		_window_w = 240;
 		_window_h = 160;
@@ -109,9 +111,11 @@ namespace ss
 			{
 				// read the file from gbfs
                 const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
+                DEBUG_PRINTF("find_first_gbfs_file dat: 0x%x", dat);
                 const void *fp = gbfs_get_obj(dat, pszFileName, (u32 *)pSize);
                 pBuffer = new unsigned char[*pSize];
                 memcpy(pBuffer, fp, *pSize);
+                DEBUG_PRINTF("Load File: %s (size: 0x%x) from 0x%x to 0x%x", pszFileName, *pSize, fp, pBuffer);
 			} while (0);
 		}
 
@@ -290,15 +294,19 @@ namespace ss
 	//各プレイヤーの描画を行う前の初期化処理
 	void SSRenderSetup( void )
 	{
+//        RegisterRamReset(RESET_OAM);
         REG_DISPCNT |= DCNT_OBJ;
-        RegisterRamReset(RESET_OAM);
+        REG_DISPCNT &= ~DCNT_BLANK;
+        object_index = 0;
 
 		_ssDrawState.init();
 	}
 
 	void SSRenderEnd(void)
 	{
-        RegisterRamReset(RESET_OAM);
+//        RegisterRamReset(RESET_OAM);
+//        REG_DISPCNT = DCNT_OBJ;
+        object_index = 0;
 	}
 
 	/**
@@ -314,7 +322,11 @@ namespace ss
 		}
 
 
-		if (sprite->_state.isVisibled == false) return; //非表示なので処理をしない
+		if (sprite->_state.isVisibled == false)
+        {
+            DEBUG_PRINTF("SSDrawSprite: sprite is not visible.");
+            return; //非表示なので処理をしない
+        }
 
 		//ステータスから情報を取得し、各プラットフォームに合わせて機能を実装してください。
 		State state;
@@ -330,6 +342,7 @@ namespace ss
 		int tex_index = state.texture.handle;
 		if (texture[tex_index] == nullptr)
 		{
+            DEBUG_PRINTF("SSDrawSprite: texture %d is empty.", tex_index);
 			return;
 		}
 
@@ -340,8 +353,9 @@ namespace ss
 		* 下方向がプラスになります。
         */
 
-        if (state.cellIndex > 31)
+        if (object_index > 31)
         {
+            DEBUG_PRINTF("SSDrawSprite: no free object slot for cell %d.", state.cellIndex);
             return;
         }
 
@@ -393,11 +407,13 @@ namespace ss
                 obj.attr1 = ATTR1_SIZE_32x16;
                 obj.attr0 = ATTR0_WIDE;
                 break;
+            case 6416:
             case 6432:
                 obj.attr1 = ATTR1_SIZE_64x32;
                 obj.attr0 = ATTR0_WIDE;
                 break;
             default:
+                DEBUG_PRINTF("SSDrawSprite: invalid object size: %d x %d.", (int)state.size_X, (int)state.size_Y);
                 return;
         }
 
@@ -405,26 +421,71 @@ namespace ss
 
         float x = state.mat[12];	/// 表示座標はマトリクスから取得します。
 		float y = state.mat[13];	/// 表示座標はマトリクスから取得します。
-        obj_set_pos(&obj, (int)x, (int)y);
+        
+        x = _window_w / 2 + x;
+        y = _window_h / 2 + y;
 
-        float rotationZ = RadianToDegree(state.Calc_rotationZ);		/// 回転値
+//        int rotationZ = state.Calc_rotationZ;		/// 回転値
+//        int rotationZ = -state.rotationZ;        /// 回転値
+        int rotationZ = -state.Calc_rotationZ;        /// 回転値
+       
 		float scaleX = state.Calc_scaleX;							/// 拡大率
 		float scaleY = state.Calc_scaleY;							/// 拡大率
-        if (rotationZ == 0.0f && scaleX == 1.0f && scaleY == 1.0f)
+        
+        // https://www.webtech.co.jp/help/ja/spritestudio/guide/window6/other/editcell/
+        //原点計算を行う
+        float cx = ((state.rect.size.width * scaleX) * (state.pivotX + 0.5f));
+        float cy = ((state.rect.size.height * scaleY) * (state.pivotY + 0.5f));
+//        get_uv_rotation(&cx, &cy, 0, 0, rotationZ);
+        
+        DEBUG_PRINTF("SSDrawSprite: object: %d, cell: %d, priority: %d, state.x: %f, state.y: %f, state.pivotX: %f, state.pivotY: %f, cx: %f, cy: %f, x: %f, y: %f", object_index, state.cellIndex, state.priority, state.x, state.y, state.pivotX, state.pivotY, cx, cy, x, y);
+        
+        rotationZ %= 360;
+        if (rotationZ < 0)
+        {
+            rotationZ = 360 + rotationZ;
+        }
+        
+//        if (rotationZ == 0 && scaleX == 1.0f && scaleY == 1.0f)
+        if ((rotationZ < 1 || rotationZ > 360 - 1) && ((scaleX - 1.0f) < 0.1f && (1.0f - scaleX) < 0.1f) && ((scaleY - 1.0f) < 0.1f && (1.0f - scaleY) < 0.1f))
+//        if (true)
         {
             obj.attr0 |= ATTR0_REG;
             obj.attr1 |= state.flipX ? ATTR1_HFLIP: 0;
             obj.attr1 |= state.flipY ? ATTR1_VFLIP: 0;
+            
+            x -= cx;
+            y -= cy;
+            obj_set_pos(&obj, (int)x, (int)y);
         }
         else
         {
             obj.attr0 |= ATTR0_AFF_DBL;
             // https://wiki.nycresistor.com/wiki/GB101:Affine_Sprites
-            obj.attr1 |= ATTR1_AFF_ID(state.cellIndex);
-            obj_aff_rotscale(&obj_aff_mem[state.cellIndex], (FIXED)(scaleX * 256), (FIXED)(scaleY * 256), (u16)(rotationZ * 0xffff / 360));
+            obj.attr1 |= ATTR1_AFF_ID(object_index);
+            
+            FIXED sx = 256 / scaleX;
+            FIXED sy = 256 / scaleY;
+            u16 alpha = rotationZ * 0xffff / 360;
+            DEBUG_PRINTF("SSDrawSprite: object: %d, cell: %d, priority: %d, Orig_scaleX: %f, Orig_scaleY: %f, Calc_scaleX: %f, Calc_scaleY: %f Orig_rotationZ: %f, Calc_rotationZ: %f, rotationZ: %d, sx: %d, sy: %d, alpha: %d", object_index, state.cellIndex, state.priority, state.scaleX, state.scaleY, scaleX, scaleY, state.rotationZ, state.Calc_rotationZ, rotationZ, sx, sy, alpha);
+            // https://www.coranac.com/tonc/text/affobj.htm#sec-combo
+            AFF_SRC_EX asx = {cx * 256, cy * 256, x, y, sx, sy, alpha};
+            obj_rotscale_ex(&obj, &obj_aff_mem[object_index], &asx);
+//            obj_aff_rotscale(&obj_aff_mem[object_index],  sx, sy, alpha);
+//            obj_aff_identity(&obj_aff_mem[object_index]);
         }
 
-        oam_copy(&obj_mem[state.cellIndex], &obj, 1);
+        obj.fill = obj_mem[object_index].fill;
+        oam_copy(&obj_mem[object_index], &obj, 1);
+        
+        DEBUG_PRINTF("SSDrawSprite: add object %d (cell: %d) at 0x%x successfully.", object_index, state.cellIndex, &obj_mem[object_index]);
+        
+        object_index++;
+        
+        if (object_index > 31)
+        {
+            DEBUG_PRINTF("SSDrawSprite: all object slots are used.");
+        }
     }
 
 

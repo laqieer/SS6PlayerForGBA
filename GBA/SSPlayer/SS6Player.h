@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------
+//-----------------------------------------------------------
 // SS6ssbpLib v1.6.0
 //
 // Copyright(C) Web Technology Corp.
@@ -138,16 +138,16 @@ extern void get_uv_rotation(float *u, float *v, float cu, float cv, float deg);
 #define SS_SAFE_RETAIN(p)            do { if(p) { (p)->retain(); } } while(0)
 #define SS_BREAK_IF(cond)            if(cond) break
 
-#ifdef _DEBUG
+#ifndef _DEBUG
 	#define SSLOG(...)       do {} while (0)
-	#define SS_ASSERT(cond)    assert(cond)
+	#define SS_ASSERT(cond)
 	#define SS_ASSERT2(cond, msg) SS_ASSERT(cond)
 	#define SSLOGERROR(format,...)  do {} while (0)
 #else
-	#define SSLOG(...)       do {} while (0)
-	#define SS_ASSERT(cond)
-	#define SS_ASSERT2(cond, msg) ((void)(cond))
-	#define SSLOGERROR(format,...)  do {} while (0)
+	#define SSLOG(...)       DEBUG_PRINTF(__VA_ARGS__)
+    #define SS_ASSERT(cond)  if (!(cond)) { THROW_ERROR_MESSAGE(#cond); }
+    #define SS_ASSERT2(cond, msg) if (!(cond)) { THROW_ERROR_MESSAGE(msg); }
+	#define SSLOGERROR(format,...)  DEBUG_ERRORF(format, __VA_ARGS__)
 #endif
 
 
@@ -939,7 +939,7 @@ enum
 //使用するアニメーションに合わせて設定してください。
 
 //プレイヤーで扱えるアニメに含まれるパーツの最大数
-#define PART_VISIBLE_MAX (512)
+#define PART_VISIBLE_MAX (32)
 
 //このサンプルでは3D機能を使用して描画します。
 //それぞれのプラットフォームに合わせた座標系で使用してください。

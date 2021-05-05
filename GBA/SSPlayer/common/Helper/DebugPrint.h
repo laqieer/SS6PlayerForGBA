@@ -1,4 +1,4 @@
-﻿#ifndef __DEBUG_PRINTF__
+#ifndef __DEBUG_PRINTF__
 #define __DEBUG_PRINTF__
 
 #include <string>
@@ -7,6 +7,7 @@ namespace ss
 {
 
 void DEBUG_PRINTF( const char* strFormat, ...   );
+void DEBUG_ERRORF( const char* strFormat, ...   );
 
 struct ThrowErrorMessage{
 	std::string message;

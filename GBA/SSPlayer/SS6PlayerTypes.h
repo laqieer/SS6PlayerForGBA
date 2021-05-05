@@ -1,4 +1,4 @@
-﻿/**
+/**
 *  SS5PlayerTypes.h
 */
 
@@ -15,16 +15,16 @@ class SSSize;
 class SSPoint;
 
 
-#ifdef _DEBUG
-	#define SSLOG(...)       do {} while (0)
-	#define SS_ASSERT(cond)    assert(cond)
-	#define SS_ASSERT2(cond, msg) SS_ASSERT(cond)
-	#define SSLOGERROR(format,...)  do {} while (0)
+#ifndef _DEBUG
+    #define SSLOG(...)       do {} while (0)
+    #define SS_ASSERT(cond)
+    #define SS_ASSERT2(cond, msg) SS_ASSERT(cond)
+    #define SSLOGERROR(format,...)  do {} while (0)
 #else
-	#define SSLOG(...)       do {} while (0)
-	#define SS_ASSERT(cond)
-	#define SS_ASSERT2(cond, msg) ((void)(cond))
-	#define SSLOGERROR(format,...)  do {} while (0)
+    #define SSLOG(...)       DEBUG_PRINTF(__VA_ARGS__)
+    #define SS_ASSERT(cond)  if (!(cond)) { THROW_ERROR_MESSAGE(#cond); }
+    #define SS_ASSERT2(cond, msg) if (!(cond)) { THROW_ERROR_MESSAGE(msg); }
+    #define SSLOGERROR(format,...)  DEBUG_ERRORF(format, __VA_ARGS__)
 #endif
 
 /**

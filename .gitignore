@@ -34,3 +34,12 @@
 
 # Emulator files
 *.sav
+
+.DS_Store
+*.gba
+*.gbfs
+*.map
+GBA/samples/basic/resource/*.h
+GBA/samples/basic/resource/*.bin
+GBA/samples/basic/resource/*.png
+GBA/samples/basic/build/

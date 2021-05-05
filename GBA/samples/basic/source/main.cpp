@@ -11,8 +11,8 @@
 #define HEIGHT (SCREEN_HEIGHT)
 
 //FPS制御用
-int nowtime = 0;	//経過時間
-int drawtime = 0;	//前回の時間
+int frameCnt;
+#define WAIT_FRAME (1)
 
 //glutのコールバック関数
 void mouse(int button, int state, int x, int y);
@@ -43,16 +43,32 @@ std::vector<std::string> animename;	//アニメーション名のリスト
 
 
 //アプリケーションのメイン関数関数
-int main() 
+int main(void) 
 {
+    IRQ_INIT();
     irq_enable(II_VBLANK);
 
 	Init();
 
+    frameCnt = 1;
+    
     while (true)
     {
         VBlankIntrWait();
+        
+        ss::DEBUG_PRINTF("frameCnt: %d", frameCnt);
+
+        if (frameCnt == 0)
+        {
+            update((float)WAIT_FRAME / 60.0f );		//ゲームの更新
+		    draw();									//ゲームの描画
+        }
+
+        frameCnt = (frameCnt + 1) % WAIT_FRAME;
     }
+
+    /// プレイヤー終了処理
+	relese( );
 
 	return 0;
 }
@@ -77,6 +93,11 @@ void Init()
 
 	**********************************************************************************/
 
+    ss::DEBUG_PRINTF("Init Start!");
+    
+    //Set backdrop color
+    pal_bg_mem[0] = 0x5425;
+
 	//プレイヤーを使用する前の初期化処理
 	//この処理はアプリケーションの初期化で１度だけ行ってください。
 	ss::SSPlatformInit();
@@ -90,14 +111,24 @@ void Init()
 	//プレイヤーの作成
 	ssplayer = ss::Player::create();
 
+    ss::DEBUG_PRINTF("ssplayer create complete!");
+    
 	//アニメデータをリソースに追加
 
 	//それぞれのプラットフォームに合わせたパスへ変更してください。
-	resman->addData("Resources/character_template_comipo/character_template1.ssbp");
+	resman->addData("chara_2head.ssbp");
+	
+    ss::DEBUG_PRINTF("addData complete!");
+
 	//プレイヤーにリソースを割り当て
-	ssplayer->setData("character_template1");						// ssbpファイル名（拡張子不要）
+	ssplayer->setData("chara_2head");						// ssbpファイル名（拡張子不要）
+	
+    ss::DEBUG_PRINTF("setData complete!");
+    
 	//再生するモーションを設定
-	ssplayer->play("character_template_3head/stance");				// アニメーション名を指定(ssae名/アニメーション)
+	ssplayer->play("chara_2head/attack1");				// アニメーション名を指定(ssae名/アニメーション)
+	
+    ss::DEBUG_PRINTF("play attack1 complete!");
 
 
 	//表示位置を設定
@@ -113,6 +144,8 @@ void Init()
 	//ssbpに含まれているアニメーション名のリストを取得する
 	animename = resman->getAnimeName(ssplayer->getPlayDataName());
 	playindex = 0;				//現在再生しているアニメのインデックス
+	
+    ss::DEBUG_PRINTF("Init Complete!");
 }
 
 //アプリケーション更新

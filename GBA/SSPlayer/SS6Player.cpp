@@ -1,4 +1,4 @@
-﻿// 
+// 
 //  SS5Player.cpp
 //
 #include "SS6Player.h"
@@ -97,6 +97,13 @@ unsigned int getRandomSeed()
 
 	return(rc);
 }
+
+// 比较精灵的优先级
+bool cmpSpritePriority(const CustomSprite *s1, const CustomSprite *s2)
+{
+    return s1->_state.priority > s2->_state.priority;//降序排列
+}
+
 
 
 
@@ -1080,6 +1087,7 @@ std::vector<std::string> ResourceManager::getAnimeName(const std::string& dataKe
 std::string ResourceManager::addData(const std::string& dataKey, const ProjectData* data, const std::string& imageBaseDir, const std::string& zipFilepath, bool imageZipLoad)
 {
 	SS_ASSERT2(data != NULL, "Invalid data");
+    DEBUG_PRINTF("data: 0x%x, dataId: 0x%x, version: %d", data, data->dataId, data->version);
 	SS_ASSERT2(data->dataId == DATA_ID, "Not data id matched");
 	SS_ASSERT2(data->version == DATA_VERSION, "Version number of data does not match");
 	
@@ -1133,6 +1141,7 @@ std::string ResourceManager::addDataWithKey(const std::string& dataKey, const st
 	}
 	
 	const ProjectData* data = static_cast<const ProjectData*>(loadData);
+    DEBUG_PRINTF("data: 0x%x, dataId: 0x%x, version: %d", data, data->dataId, data->version);
 	SS_ASSERT2(data->dataId == DATA_ID, "Not data id matched");
 	SS_ASSERT2(data->version == DATA_VERSION, "Version number of data does not match");
 	
@@ -3404,6 +3413,8 @@ void Player::draw( void* exParam )
 {
 	_draw_count = 0;
 	_exParamDraw = exParam;	//拡張パラメータの保存
+    
+    object_index = 0;
 
 	if (!_currentAnimeRef) return;
 
@@ -3414,10 +3425,24 @@ void Player::draw( void* exParam )
 
 	ToPointer ptr(_currentRs->data);
 	const AnimePackData* packData = _currentAnimeRef->animePackData;
-
+    
+    //按照优先级排序从高到低排序
+    sort(_maskIndexList.begin(), _maskIndexList.end(), cmpSpritePriority);
+    DEBUG_PRINTF("_maskIndexList sorted by priority:");
+    for (std::vector<CustomSprite *>::const_iterator i = _maskIndexList.begin(); i != _maskIndexList.end(); ++i)
+        DEBUG_PRINTF("%d", (*i)->_state.priority);
+    sort(_parts.begin(), _parts.end(), cmpSpritePriority);
+    DEBUG_PRINTF("_parts sorted by priority:");
+    for (std::vector<CustomSprite *>::const_iterator i = _parts.begin(); i != _parts.end(); ++i)
+        DEBUG_PRINTF("%d", (*i)->_state.priority);
+    /*sort(_partIndex, _partIndex + PART_VISIBLE_MAX, [&](int id1, int id2)
+    {
+        return static_cast<CustomSprite*>(_parts.at(id1))->_state.priority > static_cast<CustomSprite*>(_parts.at(id2))->_state.priority;//降序排列
+    });*/
 
 	if (_maskFuncFlag == true) //マスク機能が有効（インスタンスのソースアニメではない）
 	{
+        
 		//初期に適用されているマスクを精製
 		for (size_t i = 0; i < _maskIndexList.size(); i++)
 		{
@@ -3436,7 +3461,8 @@ void Player::draw( void* exParam )
 	for (int index = 0; index < packData->numParts; index++)
 	{
 
-		int partIndex = _partIndex[index];
+		//int partIndex = _partIndex[index];
+        int partIndex = index;
 		//スプライトの表示
 		CustomSprite* sprite = static_cast<CustomSprite*>(_parts.at(partIndex));
 

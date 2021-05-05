@@ -132,6 +132,9 @@ else
 #---------------------------------------------------------------------------------
 
 $(OUTPUT).gba	:	$(OUTPUT).elf
+	@$(PREFIX)objcopy -v -O binary $< $@
+	@gbafix $@
+	@dd if=/dev/zero bs=1 count=$$(expr 256 - $$(stat -f "%Dz" $@) % 256) >> $@
 
 $(OUTPUT).elf	:	$(OFILES)
 

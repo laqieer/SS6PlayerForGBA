@@ -1,4 +1,4 @@
-﻿/**
+/**
 *  SS5PlayerPlatform.h
 */
 
@@ -37,7 +37,7 @@ namespace ss
 	extern void enableMask(bool flag);
 	extern void execMask(CustomSprite *sprite);
 
-
+    extern int object_index;                            //OBJ ID
 
 };	// namespace ss
 
