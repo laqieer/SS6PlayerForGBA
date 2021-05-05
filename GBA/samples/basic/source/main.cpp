@@ -97,6 +97,12 @@ void Init()
     
     //Set backdrop color
     pal_bg_mem[0] = 0x5425;
+    
+    //Hide all OBJs
+    for(int i=0; i<128; i++)
+    {
+    	obj_hide(&obj_mem[i]);
+    }
 
 	//プレイヤーを使用する前の初期化処理
 	//この処理はアプリケーションの初期化で１度だけ行ってください。
