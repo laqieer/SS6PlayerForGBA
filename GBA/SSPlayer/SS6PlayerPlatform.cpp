@@ -460,7 +460,16 @@ namespace ss
         }
         else
         {
-            obj.attr0 |= ATTR0_AFF_DBL;
+            //FIXME: try avoid using double size affine sprites to avoid exceeding the maximum number of sprite pixels per scanline to fix bug: https://github.com/laqieer/SS6PlayerForGBA/issues/1, but it brings a new bug: some OBJ will lose parts outside of the normal-sized (not rotated) rectangular area if OBJ Double-Size Bit is not enabled. A better strategy to detect if OBJ Double-Size Bit is supposed to be enabled may solve it.
+            // https://www.akkit.org/info/gbatek.htm#lcdobjoverview
+            if (state.size_X == state.size_Y || rotationZ < 15 || rotationZ > 360 - 15 || (rotationZ > 180 - 15 && rotationZ < 180 + 15))
+            {
+                obj.attr0 |= ATTR0_AFF;
+            }
+            else
+            {
+                obj.attr0 |= ATTR0_AFF_DBL;
+            }
             // https://wiki.nycresistor.com/wiki/GB101:Affine_Sprites
             obj.attr1 |= ATTR1_AFF_ID(object_index);
             
