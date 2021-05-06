@@ -134,7 +134,11 @@ else
 $(OUTPUT).gba	:	$(OUTPUT).elf
 	@$(PREFIX)objcopy -v -O binary $< $@
 	@gbafix $@
+ifeq ($(shell uname), Darwin)
 	@dd if=/dev/zero bs=1 count=$$(expr 256 - $$(stat -f "%Dz" $@) % 256) >> $@
+else
+	@dd if=/dev/zero bs=1 count=$$(expr 256 - $$(stat -c "%s" $@) % 256) >> $@
+endif
 
 $(OUTPUT).elf	:	$(OFILES)
 
