@@ -1,0 +1,5 @@
+container:
+  image: devkitpro/devkitarm
+task:
+  build_script:
+    - ./build_samples.sh
