@@ -11,8 +11,8 @@
 #define HEIGHT (SCREEN_HEIGHT)
 
 //FPS制御用
-int frameCnt;
-#define WAIT_FRAME (1)
+// int frameCnt;
+#define SKIP_FRAME (2)
 
 //glutのコールバック関数
 void mouse(int button, int state, int x, int y);
@@ -50,21 +50,21 @@ int main(void)
 
 	Init();
 
-    frameCnt = 1;
+//     frameCnt = 1;
     
     while (true)
     {
         VBlankIntrWait();
         
-        ss::DEBUG_PRINTF("frameCnt: %d", frameCnt);
+//         ss::DEBUG_PRINTF("frameCnt: %d", frameCnt);
 
-        if (frameCnt == 0)
+//         if (frameCnt == 0)
         {
-            update((float)WAIT_FRAME / 60.0f );		//ゲームの更新
+            update((float)SKIP_FRAME / 60.0f );		//ゲームの更新
 		    draw();									//ゲームの描画
         }
 
-        frameCnt = (frameCnt + 1) % WAIT_FRAME;
+//         frameCnt = (frameCnt + 1) % SKIP_FRAME;
     }
 
     /// プレイヤー終了処理
