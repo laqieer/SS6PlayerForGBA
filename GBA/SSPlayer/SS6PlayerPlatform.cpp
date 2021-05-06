@@ -484,6 +484,9 @@ namespace ss
 //            obj_aff_identity(&obj_aff_mem[object_index]);
         }
 
+        //Set OBJ priority relative to BG.
+        obj.attr2 |= ATTR2_PRIO(1);
+        
         obj.fill = obj_mem[object_index].fill;
         oam_copy(&obj_mem[object_index], &obj, 1);
         

@@ -95,6 +95,11 @@ void Init()
 
     ss::DEBUG_PRINTF("Init Start!");
     
+    // Init tte
+    tte_init_se(0, BG_CBB(0)|BG_SBB(31), 0, CLR_WHITE, 0, NULL, NULL);
+    tte_write("#{P:0,144}https://github.com/laqieer/SS6PlayerForGBA");
+    REG_DISPCNT = DCNT_MODE0 | DCNT_BG0;
+    
     //Set backdrop color
     pal_bg_mem[0] = 0x5425;
     
@@ -115,12 +120,15 @@ void Init()
 
 
 	//プレイヤーの作成
+	tte_write("#{P:0,0}Create ssplayer\n");
+	
 	ssplayer = ss::Player::create();
 
     ss::DEBUG_PRINTF("ssplayer create complete!");
     
 	//アニメデータをリソースに追加
-
+	tte_write("Load model: chara_2head.ssbp\n");
+	
 	//それぞれのプラットフォームに合わせたパスへ変更してください。
 	resman->addData("chara_2head.ssbp");
 	
@@ -132,6 +140,8 @@ void Init()
     ss::DEBUG_PRINTF("setData complete!");
     
 	//再生するモーションを設定
+	tte_write("Play motion: chara_2head/attack1\n");
+	
 	ssplayer->play("chara_2head/attack1");				// アニメーション名を指定(ssae名/アニメーション)
 	
     ss::DEBUG_PRINTF("play attack1 complete!");
