@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -e
 
 cd GBA/samples/basic
 make
