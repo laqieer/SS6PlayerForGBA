@@ -95,12 +95,12 @@ https://github.com/SpriteStudio/SpriteStudio6-SDK
 #include <functional>
 
 //エフェクト関連
-#include "./Common/loader/ssloader.h"
-#include "./Common/Animator/ssplayer_macro.h"
-#include "./Common/Animator/ssplayer_matrix.h"
-#include "./Common/Animator/ssplayer_effectfunction.h"
-#include "./Common/Animator/ssplayer_cellmap.h"
-#include "./Common/Animator/ssplayer_PartState.h"
+#include "ssloader.h"
+#include "ssplayer_macro.h"
+#include "ssplayer_matrix.h"
+#include "ssplayer_effectfunction.h"
+#include "ssplayer_cellmap.h"
+#include "ssplayer_PartState.h"
 //#include "./Common/Animator/MersenneTwister.h"
 
 #pragma warning(disable : 4996)

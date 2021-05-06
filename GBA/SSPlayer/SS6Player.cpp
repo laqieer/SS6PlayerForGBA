@@ -4,7 +4,7 @@
 #include "SS6Player.h"
 #include "SS6PlayerData.h"
 #include "SS6PlayerTypes.h"
-#include "common/Animator/ssplayer_matrix.h"
+#include "ssplayer_matrix.h"
 
 
 namespace ss

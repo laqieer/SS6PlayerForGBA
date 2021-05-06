@@ -1,7 +1,7 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <cstdlib>
 
-#include "../loader/ssloader.h"
+#include "ssloader.h"
 #include "ssplayer_effect.h"
 #include "ssplayer_effect2.h"
 #include "ssplayer_macro.h"

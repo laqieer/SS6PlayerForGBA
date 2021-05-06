@@ -1,14 +1,14 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <cstdlib>
 
-#include "../loader/ssloader.h"
+#include "ssloader.h"
 
 #include "ssplayer_effect.h"
 #include "ssplayer_macro.h"
 #include "ssplayer_matrix.h"
 #include "ssplayer_effectfunction.h"
 
-#include "../../SS6PlayerPlatform.h"
+#include "SS6PlayerPlatform.h"
 
 
 namespace ss

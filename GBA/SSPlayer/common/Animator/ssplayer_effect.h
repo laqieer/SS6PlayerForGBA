@@ -1,13 +1,13 @@
-﻿#ifndef __SSPLAYER_EFFECT__
+#ifndef __SSPLAYER_EFFECT__
 #define __SSPLAYER_EFFECT__
 
 #include <list>
-#include "../../SS6Player.h"
-#include "../loader/ssloader.h"
+#include "SS6Player.h"
+#include "ssloader.h"
 #include "MersenneTwister.h"
 #include "ssplayer_cellmap.h"
 #include "ssplayer_PartState.h"
-#include "../Helper/DebugPrint.h"
+#include "DebugPrint.h"
 
 namespace ss
 {

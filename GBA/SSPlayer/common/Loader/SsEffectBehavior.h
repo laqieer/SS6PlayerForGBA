@@ -1,8 +1,8 @@
-﻿#ifndef __SSEFFECTBEHAVIOR__
+#ifndef __SSEFFECTBEHAVIOR__
 #define __SSEFFECTBEHAVIOR__
 
 #include "SsEffectElement.h"
-#include "../Animator/ssplayer_cellmap.h"
+#include "ssplayer_cellmap.h"
 #include "sstypes.h"
 
 namespace ss

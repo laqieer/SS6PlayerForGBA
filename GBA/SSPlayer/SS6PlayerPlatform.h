@@ -5,7 +5,7 @@
 #ifndef SS5PlayerPlatform_h
 #define SS5PlayerPlatform_h
 #include "SS6Player.h"
-#include "common/loader/sstypes.h"
+#include "sstypes.h"
 #include <stdio.h>
 #include <string>
 #include <stddef.h>
