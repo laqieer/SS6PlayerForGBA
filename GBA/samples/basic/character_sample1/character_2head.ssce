@@ -20,10 +20,10 @@
 	</texPackSettings>
 	<cells>
 		<cell>
-			<name>head1</name>
+			<name>head</name>
 			<pos>0 0</pos>
 			<size>64 64</size>
-			<pivot>0.03125 -0.21875</pivot>
+			<pivot>0.03125 -0.1875</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -38,22 +38,7 @@
 			<name>body</name>
 			<pos>64 0</pos>
 			<size>64 64</size>
-			<pivot>-0.015625 -0.390625</pivot>
-			<rotated>0</rotated>
-			<orgImageName></orgImageName>
-			<posStable>0</posStable>
-			<ismesh>0</ismesh>
-			<divtype>unknown</divtype>
-			<innerPoint />
-			<outerPoint />
-			<meshPointList />
-			<meshTriList />
-		</cell>
-		<cell>
-			<name>head2</name>
-			<pos>128 32</pos>
-			<size>64 17</size>
-			<pivot>0 0.5</pivot>
+			<pivot>0.03125 -0.375</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -67,8 +52,8 @@
 		<cell>
 			<name>leg_l</name>
 			<pos>128 0</pos>
-			<size>32 32</size>
-			<pivot>-0.09375 0.21875</pivot>
+			<size>16 32</size>
+			<pivot>-0.0625 0.21875</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -81,9 +66,9 @@
 		</cell>
 		<cell>
 			<name>leg_r</name>
-			<pos>160 0</pos>
-			<size>32 32</size>
-			<pivot>0 0.21875</pivot>
+			<pos>144 0</pos>
+			<size>16 32</size>
+			<pivot>-0.0625 0.21875</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -96,24 +81,9 @@
 		</cell>
 		<cell>
 			<name>arm_l</name>
-			<pos>224 0</pos>
-			<size>32 32</size>
-			<pivot>0.15625 0.40625</pivot>
-			<rotated>0</rotated>
-			<orgImageName></orgImageName>
-			<posStable>0</posStable>
-			<ismesh>0</ismesh>
-			<divtype>unknown</divtype>
-			<innerPoint />
-			<outerPoint />
-			<meshPointList />
-			<meshTriList />
-		</cell>
-		<cell>
-			<name>arm_r</name>
-			<pos>192 0</pos>
-			<size>32 32</size>
-			<pivot>0.125 0.40625</pivot>
+			<pos>176 0</pos>
+			<size>16 32</size>
+			<pivot>0.0625 0.40625</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -126,9 +96,9 @@
 		</cell>
 		<cell>
 			<name>object1</name>
-			<pos>192 48</pos>
-			<size>64 16</size>
-			<pivot>0.03125 0</pivot>
+			<pos>224 32</pos>
+			<size>32 16</size>
+			<pivot>-0.25 0</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -141,9 +111,9 @@
 		</cell>
 		<cell>
 			<name>object2</name>
-			<pos>128 48</pos>
-			<size>64 16</size>
-			<pivot>1.015625 0</pivot>
+			<pos>192 32</pos>
+			<size>32 16</size>
+			<pivot>0.75 0</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>
@@ -155,10 +125,40 @@
 			<meshTriList />
 		</cell>
 		<cell>
-			<name>shadow</name>
-			<pos>192 32</pos>
-			<size>64 16</size>
-			<pivot>0.140625 -0.25</pivot>
+			<name>object3</name>
+			<pos>160 32</pos>
+			<size>32 16</size>
+			<pivot>1.75 0</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>object4</name>
+			<pos>144 32</pos>
+			<size>16 16</size>
+			<pivot>5 0</pivot>
+			<rotated>0</rotated>
+			<orgImageName></orgImageName>
+			<posStable>0</posStable>
+			<ismesh>0</ismesh>
+			<divtype>unknown</divtype>
+			<innerPoint />
+			<outerPoint />
+			<meshPointList />
+			<meshTriList />
+		</cell>
+		<cell>
+			<name>arm_r</name>
+			<pos>160 0</pos>
+			<size>16 32</size>
+			<pivot>0.0625 0.40625</pivot>
 			<rotated>0</rotated>
 			<orgImageName></orgImageName>
 			<posStable>0</posStable>

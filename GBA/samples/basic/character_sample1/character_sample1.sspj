@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <SpriteStudioProject version="2.00.01" edition="Professional" editorVersion="6.6.0">
-	<name>chara_2head</name>
+	<name>character_sample1</name>
 	<exportPath></exportPath>
 	<settings>
 		<animeBaseDirectory></animeBaseDirectory>
@@ -149,15 +149,17 @@
 	</texPackSettings>
 	<cellmapNames>
 		<value>character_2head.ssce</value>
+		<value>character_3head.ssce</value>
 	</cellmapNames>
 	<animepackNames>
-		<value>chara_2head.ssae</value>
+		<value>character_template_2head.ssae</value>
+		<value>character_template_3head.ssae</value>
 	</animepackNames>
-	<lastAnimeFile>chara_2head.ssae</lastAnimeFile>
-	<lastAnimeName>attack1</lastAnimeName>
-	<lastPart>shadow</lastPart>
+	<lastAnimeFile>character_template_2head.ssae</lastAnimeFile>
+	<lastAnimeName>attack</lastAnimeName>
+	<lastPart>head</lastPart>
 	<lastCellMapFile>character_2head.ssce</lastCellMapFile>
-	<lastCell>shadow</lastCell>
+	<lastCell>head</lastCell>
 	<lastEffectFile></lastEffectFile>
 	<setupmode>0</setupmode>
 	<expandAnimation />

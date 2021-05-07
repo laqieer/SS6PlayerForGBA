@@ -3225,10 +3225,10 @@ void Player::setFrame(int frameNo, float dt)
 					else
 					{
 						IdentityMatrix(mat);
-/*
+
 						sprite->_state.x += _state.x;	//スケールの影響を受けるのでrootにプレイヤー座標を加えてはいけない
 						sprite->_state.y += _state.y;
-						sprite->_state.rotationX += _state.rotationX;
+/*						sprite->_state.rotationX += _state.rotationX;
 						sprite->_state.rotationY += _state.rotationY;
 						sprite->_state.rotationZ += _state.rotationZ;
 						sprite->_state.scaleX *= _state.scaleX;

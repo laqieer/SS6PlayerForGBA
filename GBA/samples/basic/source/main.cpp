@@ -41,6 +41,37 @@ int playindex = 0;				//現在再生しているアニメのインデックス
 int playerstate = 0;
 std::vector<std::string> animename;	//アニメーション名のリスト
 
+// .ssae files
+const char * models[] = {"character_template_2head",  "character_template_3head"};
+const char * motions[] = {"wait",  "attack", "walk"};
+
+static bool endsWith(const std::string& str, const std::string& suffix)
+{
+    return str.size() >= suffix.size() && 0 == str.compare(str.size()-suffix.size(), suffix.size(), suffix);
+}
+
+void handleInput()
+{
+	key_poll();
+	
+	// Press A/R/→/↓ button to play next animation
+	if(key_hit(KEY_A) || key_hit(KEY_R) || key_hit(KEY_RIGHT) || key_hit(KEY_DOWN))
+	{
+		nextanime = true;
+	}
+	
+	// Press B/L/←/↑ button to play previous animation
+	if(key_hit(KEY_B) || key_hit(KEY_L) || key_hit(KEY_LEFT) || key_hit(KEY_UP))
+	{
+		forwardanime = true;
+	}
+	
+	// Press Select/Start button to pause/resume animation
+	if(key_hit(KEY_SELECT) || key_hit(KEY_START))
+	{
+		pauseanime = true;
+	}
+}
 
 //アプリケーションのメイン関数関数
 int main(void) 
@@ -57,6 +88,8 @@ int main(void)
         VBlankIntrWait();
         
 //         ss::DEBUG_PRINTF("frameCnt: %d", frameCnt);
+
+		handleInput();
 
 //         if (frameCnt == 0)
         {
@@ -79,6 +112,15 @@ void disp(void)
 	draw();
 }
 
+void hideAllSprites()
+{
+    //Hide all OBJs
+    for(int i=0; i<128; i++)
+    {
+        obj_hide(&obj_mem[i]);
+    }
+}
+
 //アプリケーション初期化処理
 void Init()
 {
@@ -98,16 +140,13 @@ void Init()
     // Init tte
     tte_init_se(0, BG_CBB(0)|BG_SBB(31), 0, CLR_WHITE, 0, NULL, NULL);
     tte_write("#{P:0,144}https://github.com/laqieer/SS6PlayerForGBA");
+    tte_write("#{P:120,24}A/R/Right/Down#{P:120,32}Next#{P:120,40}B/L/Left/Up#{P:120,48}Previous#{P:120,56}Select/Start#{P:120,64}Pause/Resume");
     REG_DISPCNT = DCNT_MODE0 | DCNT_BG0;
     
     //Set backdrop color
     pal_bg_mem[0] = 0x5425;
     
-    //Hide all OBJs
-    for(int i=0; i<128; i++)
-    {
-    	obj_hide(&obj_mem[i]);
-    }
+    hideAllSprites();
 
 	//プレイヤーを使用する前の初期化処理
 	//この処理はアプリケーションの初期化で１度だけ行ってください。
@@ -120,31 +159,31 @@ void Init()
 
 
 	//プレイヤーの作成
-	tte_write("#{P:0,0}Create ssplayer\n");
+// 	tte_write("#{P:0,0}Create ssplayer\n");
 	
 	ssplayer = ss::Player::create();
 
     ss::DEBUG_PRINTF("ssplayer create complete!");
     
 	//アニメデータをリソースに追加
-	tte_write("Load model: chara_2head.ssbp\n");
+	tte_write("#{P:0,0}character_sample1.ssbp\n");
 	
 	//それぞれのプラットフォームに合わせたパスへ変更してください。
-	resman->addData("chara_2head.ssbp");
+	resman->addData("character_sample1.ssbp");
 	
     ss::DEBUG_PRINTF("addData complete!");
 
 	//プレイヤーにリソースを割り当て
-	ssplayer->setData("chara_2head");						// ssbpファイル名（拡張子不要）
+	ssplayer->setData("character_sample1");						// ssbpファイル名（拡張子不要）
 	
     ss::DEBUG_PRINTF("setData complete!");
     
 	//再生するモーションを設定
-	tte_write("Play motion: chara_2head/attack1\n");
+	tte_write("character_template_2head/attack");
 	
-	ssplayer->play("chara_2head/attack1");				// アニメーション名を指定(ssae名/アニメーション)
+	ssplayer->play("character_template_2head/attack");				// アニメーション名を指定(ssae名/アニメーション)
 	
-    ss::DEBUG_PRINTF("play attack1 complete!");
+    ss::DEBUG_PRINTF("play attack complete!");
 
 
 	//表示位置を設定
@@ -158,15 +197,22 @@ void Init()
 	ssplayer->setPlayEndCallback(playEndCallback);
 
 	//ssbpに含まれているアニメーション名のリストを取得する
-	animename = resman->getAnimeName(ssplayer->getPlayDataName());
+	std::vector<std::string>  animenames = resman->getAnimeName(ssplayer->getPlayDataName());
+	std::copy_if (animenames.begin(), animenames.end(), std::back_inserter(animename), [](std::string name){return !endsWith(name, "/Setup");} );
 	playindex = 0;				//現在再生しているアニメのインデックス
 	
     ss::DEBUG_PRINTF("Init Complete!");
 }
 
+void refreshAnimeName(std::string name)
+{
+	tte_erase_rect (0, 8, 240, 24);
+	tte_write_ex (0, 8, name.c_str(), NULL);
+}
+
 //アプリケーション更新
 void update(float dt)
-{
+{        
 	//プレイヤーの更新、引数は前回の更新処理から経過した時間
 	ssplayer->update(dt);
 
@@ -178,7 +224,9 @@ void update(float dt)
 			playindex = 0;
 		}
 		std::string name = animename.at(playindex);
+		hideAllSprites();
 		ssplayer->play(name);
+		refreshAnimeName(name);
 		nextanime = false;
 	}
 	if (forwardanime == true)
@@ -189,7 +237,10 @@ void update(float dt)
 			playindex = animename.size() - 1;
 		}
 		std::string name = animename.at(playindex);
+		hideAllSprites();
 		ssplayer->play(name);
+		tte_erase_line();
+		refreshAnimeName(name);
 		forwardanime = false;
 	}
 	if (pauseanime == true)

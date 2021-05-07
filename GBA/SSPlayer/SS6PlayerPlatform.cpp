@@ -422,8 +422,8 @@ namespace ss
         float x = state.mat[12];	/// 表示座標はマトリクスから取得します。
 		float y = state.mat[13];	/// 表示座標はマトリクスから取得します。
         
-        x = _window_w / 2 + x;
-        y = _window_h / 2 + y;
+//        x = _window_w / 2 + x;
+//        y = _window_h / 2 + y;
 
 //        int rotationZ = state.Calc_rotationZ;		/// 回転値
 //        int rotationZ = -state.rotationZ;        /// 回転値
