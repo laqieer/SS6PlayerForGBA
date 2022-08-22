@@ -7,8 +7,8 @@ jobs:
   build:
     executor: my-executor
     steps:
-    - checkout
     - run: apt-get update && apt-get install -y openssh-client git
+    - checkout
     - run:
           name: Build
           command: |
