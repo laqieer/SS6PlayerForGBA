@@ -7,7 +7,6 @@ jobs:
   build:
     executor: my-executor
     steps:
-    - run: apt-get update && apt-get install -y openssh-client git
     - checkout
     - run:
           name: Build
