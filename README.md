@@ -4,7 +4,8 @@
 
 [![CircleCI](https://circleci.com/gh/laqieer/SS6PlayerForGBA.svg?style=svg)](https://app.circleci.com/pipelines/github/laqieer/SS6PlayerForGBA) [![CirrusCI](https://api.cirrus-ci.com/github/laqieer/SS6PlayerForGBA.svg)](https://cirrus-ci.com/github/laqieer/SS6PlayerForGBA)
 
-![screenshot1](https://media.discordapp.net/attachments/682141375587680274/840278168560467988/character_sample1-0.png)![screenshot2](https://media.discordapp.net/attachments/682141375587680274/840278166294888459/character_sample1-1.png)
+![](https://user-images.githubusercontent.com/8841957/185961538-3a157c70-ae67-49fe-bc97-9356f7faac1c.gif)
+![](https://user-images.githubusercontent.com/8841957/185961567-89fa8cfc-2e41-43b1-8ad6-374dc6580cef.gif)
 
 ## Dependancy
 [devkitpro](https://devkitpro.org/)
